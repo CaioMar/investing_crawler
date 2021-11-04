@@ -66,6 +66,18 @@ ITEM_PIPELINES = {
    'investing.pipelines.NoticiasPipeline': 300,
 }
 
+CHROME_DRIVER = '/home/caio/Workspace/investing/drivers/chromedriver'
+
+# Database settings
+DATABASE = {
+   'driver': 'postgresql+psycopg2',
+   'user': 'admin',
+   'password': 'example',
+   'host': 'localhost',
+   'port': '5432',
+   'database': 'some_db_dev'
+}
+
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
 #AUTOTHROTTLE_ENABLED = True

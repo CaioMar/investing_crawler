@@ -6,15 +6,47 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+import json
+
+from sqlalchemy.orm import sessionmaker
 
 import pandas as pd
 import os
 
-class InvestingPipeline:
-    def process_item(self, item, spider):
-        return item
+from investing.models import Articles, db_connect, init_db
 
-import json
+class InvestingPipeline:
+      
+    def __init__(self):
+        #Initializes database connection and sessionmaker.
+        engine = db_connect()
+        init_db(engine)
+        self.session = sessionmaker(bind=engine)()
+
+    def process_item(self, item, spider):
+        # check if item with this title exists in DB
+        item_exists = self.session.query(Articles).filter_by(article_title=item['article_title']).first()
+        # if item exists in DB - we just update 'date' and 'subs' columns.
+        if item_exists:
+            item_exists.article_date = item['article_date']
+            print('Item {} updated.'.format(item['article_title']))
+        # if not - we insert new item to DB
+        else:     
+            new_item = Articles(**item)
+            self.session.add(new_item)
+            print('New item {} added to DB.'.format(item['article_title']))
+        return item    
+
+    def close_spider(self, spider):
+        # We commit and save all items to DB when spider finished scraping.
+        try:
+            self.session.commit()
+        except:
+            self.session.rollback()
+            raise
+        finally:
+            self.session.close()
+
 
 class NoticiasPipeline(object):
 

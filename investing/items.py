@@ -7,10 +7,12 @@ import scrapy
 
 
 class InvestingItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
-
+    article_title = scrapy.Field()
+    article_link = scrapy.Field()
+    article_text = scrapy.Field()
+    article_author = scrapy.Field()
+    article_type = scrapy.Field()
+    article_date = scrapy.Field()
 
 class NoticiasItem(scrapy.Item):
     title = scrapy.Field()
